@@ -101,9 +101,14 @@ private:
     typedef RBNode<_Type> NodeType;
     typedef std::shared_ptr<NodeType> SPNodeType;
     typedef typename RBNode<_Type>::Color Color;
+    template<typename ... _P>
+    SPNodeType makeNode(_P ... p)
+    {
+        return std::make_shared<NodeType>(p ...);
+    }
 
 public:
-    RBTree() :root_(nullptr), sentinel_(std::make_shared<NodeType>(0)), compare_(_Compare())
+    RBTree() :root_(nullptr), sentinel_(makeNode(0)), compare_(_Compare())
     {
         sentinel_->left(sentinel_);
         sentinel_->right(sentinel_);
@@ -164,7 +169,7 @@ template<typename _Type, typename _Compare>
 void
 RBTree<_Type, _Compare>::insert(_Type const &value)
 {
-    SPNodeType pt = std::make_shared<NodeType>(value, sentinel_, sentinel_);
+    SPNodeType pt = makeNode(value, sentinel_, sentinel_);
 
     root_ = insert(root_, pt);
 
@@ -343,7 +348,7 @@ template<typename _Type, typename _Compare>
 auto
 RBTree<_Type, _Compare>::_find(_Type const &value)->SPNodeType
 {
-    auto pt = std::make_shared<NodeType>(value);
+    auto pt = makeNode(value);
     std::stack<SPNodeType> st{};
     st.push(root_);
     while (!st.empty())
