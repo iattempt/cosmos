@@ -98,9 +98,9 @@ template<typename _Type, typename _Compare = std::less<_Type>>
 class RBTree
 {
 private:
-    typedef RBNode<_Type> NodeType;
-    typedef std::shared_ptr<NodeType> SPNodeType;
-    typedef typename RBNode<_Type>::Color Color;
+    using NodeType = RBNode<_Type>;
+    using SPNodeType = std::shared_ptr<NodeType>;
+    using Color = typename RBNode<_Type>::Color;
     template<typename ... _P>
     SPNodeType makeNode(_P ... p)
     {
