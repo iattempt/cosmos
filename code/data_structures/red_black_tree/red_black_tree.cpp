@@ -131,23 +131,23 @@ private:
 
     SPNodeType &insertImpl(SPNodeType &root, SPNodeType &pt);
 
+    void eraseImpl(SPNodeType &);
+
     SPNodeType findImpl(_Type const &value);
+
+    inline bool isLeftChild(SPNodeType const &) const;
+
+    inline bool isRightChild(SPNodeType const &) const;
+
+    inline SPNodeType successor(SPNodeType const &);
+
+    inline SPNodeType sibling(SPNodeType const &);
 
     void rotateLeft(SPNodeType const &);
 
     void rotateRight(SPNodeType const &);
 
     void fixViolation(SPNodeType &);
-
-    inline SPNodeType successor(SPNodeType const &);
-
-    inline SPNodeType sibling(SPNodeType const &);
-
-    inline bool isLeftChild(SPNodeType const &) const;
-
-    inline bool isRightChild(SPNodeType const &) const;
-
-    void eraseImpl(SPNodeType &);
 
     void deleteCase1(SPNodeType const &);
 
@@ -192,42 +192,6 @@ RBTree<_Type, _Compare>::erase(_Type const &value)
             delete_node->value(smallest->value());
             smallest->value(temp);
             eraseImpl(smallest);
-        }
-    }
-}
-
-template<typename _Type, typename _Compare>
-void
-RBTree<_Type, _Compare>::eraseImpl(SPNodeType &pt)
-{
-    auto child = pt->left() != sentinel_ ? pt->left() : pt->right();
-    if (pt->parent() == sentinel_)
-    {
-        root_ = child;
-        root_->parent(sentinel_);
-        root_->color(Color::BLACK);
-    }
-    else
-    {
-        if (isLeftChild(pt))
-        {
-            pt->parent()->left(child);
-        }
-        else
-        {
-            pt->parent()->right(child);
-        }
-        child->parent(pt->parent());
-        if (pt->color() == Color::BLACK)
-        {
-            if (child->color() == Color::RED)
-            {
-                child->color(Color::BLACK);
-            }
-            else
-            {
-                deleteCase1(child);
-            }
         }
     }
 }
@@ -342,6 +306,42 @@ RBTree<_Type, _Compare>::insertImpl(SPNodeType &root, SPNodeType &pt)->SPNodeTyp
 }
 
 template<typename _Type, typename _Compare>
+void
+RBTree<_Type, _Compare>::eraseImpl(SPNodeType &pt)
+{
+    auto child = pt->left() != sentinel_ ? pt->left() : pt->right();
+    if (pt->parent() == sentinel_)
+    {
+        root_ = child;
+        root_->parent(sentinel_);
+        root_->color(Color::BLACK);
+    }
+    else
+    {
+        if (isLeftChild(pt))
+        {
+            pt->parent()->left(child);
+        }
+        else
+        {
+            pt->parent()->right(child);
+        }
+        child->parent(pt->parent());
+        if (pt->color() == Color::BLACK)
+        {
+            if (child->color() == Color::RED)
+            {
+                child->color(Color::BLACK);
+            }
+            else
+            {
+                deleteCase1(child);
+            }
+        }
+    }
+}
+
+template<typename _Type, typename _Compare>
 auto
 RBTree<_Type, _Compare>::findImpl(_Type const &value)->SPNodeType
 {
@@ -382,6 +382,20 @@ RBTree<_Type, _Compare>::findImpl(_Type const &value)->SPNodeType
     }
 
     return sentinel_;
+}
+
+template<typename _Type, typename _Compare>
+bool
+RBTree<_Type, _Compare>::isLeftChild(SPNodeType const &n) const
+{
+    return n == n->parent()->left();
+}
+
+template<typename _Type, typename _Compare>
+bool
+RBTree<_Type, _Compare>::isRightChild(SPNodeType const &n) const
+{
+    return n == n->parent()->right();
 }
 
 template<typename _Type, typename _Compare>
@@ -467,6 +481,13 @@ RBTree<_Type, _Compare>::successor(SPNodeType const &pt)->SPNodeType
     }
 
     return child;
+}
+
+template<typename _Type, typename _Compare>
+auto
+RBTree<_Type, _Compare>::sibling(SPNodeType const &n)->SPNodeType
+{
+    return n->parent()->left() != n ? n->parent()->left() : n->parent()->right();
 }
 
 template<typename _Type, typename _Compare>
@@ -576,27 +597,6 @@ RBTree<_Type, _Compare>::fixViolation(SPNodeType &pt)
     }
 
     root_->color(Color::BLACK);
-}
-
-template<typename _Type, typename _Compare>
-auto
-RBTree<_Type, _Compare>::sibling(SPNodeType const &n)->SPNodeType
-{
-    return n->parent()->left() != n ? n->parent()->left() : n->parent()->right();
-}
-
-template<typename _Type, typename _Compare>
-bool
-RBTree<_Type, _Compare>::isLeftChild(SPNodeType const &n) const
-{
-    return n == n->parent()->left();
-}
-
-template<typename _Type, typename _Compare>
-bool
-RBTree<_Type, _Compare>::isRightChild(SPNodeType const &n) const
-{
-    return n == n->parent()->right();
 }
 
 template<typename _Type, typename _Compare>
