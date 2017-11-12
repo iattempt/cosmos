@@ -1,9 +1,6 @@
-#include <iostream>
 #include <memory>
-#include <cassert>
 #include <string>
 #include <stack>
-using namespace std;
 
 template<typename _Type, class _Derivative>
 class BaseNode
