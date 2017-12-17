@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <functional>
 
 // Bottom-up O(n^2) approach
 int lis(int v[], int n)
@@ -23,21 +24,32 @@ int lis(int v[], int n)
 }
 
 // Bottom-up O(n*log(n)) approach
-int lis2(int v[], int n)
+template<typename _ForwardIterator, typename _Compare>
+size_t lis(_ForwardIterator begin, _ForwardIterator end, _Compare compare)
 {
     // tail[i] stores the value of the lower possible value
     // of the last element in a increasing sequence of size i
-    std::vector<int> tail;
+    using _ValueType = typename std::iterator_traits<_ForwardIterator>::value_type;
 
-    for (int i = 0; i < n; ++i)
+    std::vector<_ValueType> tail;
+
+    for (auto it = begin; it < end; ++it)
     {
-        std::vector<int>::iterator it = lower_bound(tail.begin(), tail.end(), v[i]);
+        auto lbit = lower_bound(tail.begin(), tail.end(), *it, compare);
 
-        if (it == tail.end())
-            tail.push_back(v[i]);
+        if (lbit == tail.end())
+            tail.push_back(*it);
         else
-            *it = v[i];
-    } 
+            *lbit = *it;
+    }
 
     return tail.size();
+}
+
+template<typename _ForwardIterator>
+size_t lis(_ForwardIterator begin, _ForwardIterator end)
+{
+    using _ValueType = typename std::iterator_traits<_ForwardIterator>::value_type;
+
+    return lis(begin, end, std::less<_ValueType>());
 }
