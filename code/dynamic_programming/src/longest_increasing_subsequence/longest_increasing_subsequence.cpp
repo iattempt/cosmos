@@ -3,8 +3,6 @@
 #include <vector>
 #include <algorithm>
 
-using namespace std;
-
 // Bottom-up O(n^2) approach
 int lis(int v[], int n)
 {
@@ -16,9 +14,9 @@ int lis(int v[], int n)
 
         for (int j = 0; j < i; ++j)
             if (v[j] < v[i])
-                dp[i] = max(dp[i], 1 + dp[j]);
+                dp[i] = std::max(dp[i], 1 + dp[j]);
 
-        ans = max(ans, dp[i]);
+        ans = std::max(ans, dp[i]);
     }
 
     return ans;
@@ -29,11 +27,11 @@ int lis2(int v[], int n)
 {
     // tail[i] stores the value of the lower possible value
     // of the last element in a increasing sequence of size i
-    vector<int> tail;
+    std::vector<int> tail;
 
     for (int i = 0; i < n; ++i)
     {
-        vector<int>::iterator it = lower_bound(tail.begin(), tail.end(), v[i]);
+        std::vector<int>::iterator it = lower_bound(tail.begin(), tail.end(), v[i]);
 
         if (it == tail.end())
             tail.push_back(v[i]);
