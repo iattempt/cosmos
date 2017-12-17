@@ -1,6 +1,5 @@
 /* Part of Cosmos by OpenGenus Foundation */
 
-#include <iostream>
 #include <vector>
 #include <algorithm>
 
@@ -31,11 +30,4 @@ int lis2(int v[], int n) {
         else *it = v[i];
     } 
     return tail.size();
-}
-
-int main() {
-
-    int v[9] = {10, 22, 9, 33, 21, 50, 41, 60, 80};
-    cout << lis(v, 9) << ", " << lis2(v, 9) << '\n';
-    return 0;
 }
