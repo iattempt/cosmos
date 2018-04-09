@@ -8,15 +8,8 @@ using namespace std;
 // Function to sort arr[] of size n using bucket sort
 void bucketSort(vector<float>& arr)
 {
-	// 1) Create n empty buckets
-	vector<float> b[arr.size()];
-	
-	// 2) Put array elements in different buckets
-	for (size_t i=0; i<arr.size(); i++)
-	{
-	    int bi = arr.size()*arr[i]; // Index in bucket
-	    b[bi].push_back(arr[i]);
-	}
+    // 1) Create n empty buckets
+    vector<float> b[arr.size()];
 
     // 2) Put array elements in different buckets
     for (size_t i = 0; i < arr.size(); i++)
