@@ -29,6 +29,7 @@ echo """
 ########################
 """
 cd $COSMOS_CODE_ROOT
+# for cpp_file in `find -name '*.cpp'`
 for cpp_file in `find . -name '*.cpp'`
 do
     # remove the output file if it already existed.
@@ -51,6 +52,7 @@ echo """
 #######################
 """
 cd $COSMOS_CODE_ROOT
+# for cpp_file in `find -name '*.cpp'`
 for cpp_file in `find . -name '*.cpp'`
 do
     d=$(diff "$cpp_file" "$cpp_file.uncrustify")
@@ -63,9 +65,9 @@ done
 
 cd "$cwd"
 
-if [ $error_code != 0 ]; then
+if [[ $error_code -ne 0 ]]; then
     exit 1
-elif [ $error != 0 ]; then
+elif [[ $error -ne 0 ]]; then
     echo "Failed. $error/$total error(s) generated."
     exit 1
 else
