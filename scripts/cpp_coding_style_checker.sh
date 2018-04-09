@@ -1,61 +1,73 @@
 cwd=$(pwd)
-cosmos_root_path="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )/.."
+COSMOS_ROOT="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )/.."
+COSMOS_CODE_ROOT="$COSMOS_ROOT/code"
+UNCRUSTIFY_ROOT_PATH="$COSMOS_ROOT/third_party/uncrustify"
+UNCRUSTIFY="$UNCRUSTIFY_ROOT_PATH/build/uncrustify"
+UNCRUSTIFY_CONFIG_PATH="$UNCRUSTIFY_ROOT_PATH/../uncrustify.cfg"
 
-error_times=0
-tmp=`mktemp tmp.XXXXXXXXXX`
+error_code=0
+total=0
+error=0
 
-uncrustify_root_path="$cosmos_root_path/third_party/uncrustify"
-uncrustify="$uncrustify_root_path/build/uncrustify"
-uncrustify_config_path="$uncrustify_root_path/../uncrustify.cfg"
+echo """
+###########################
+# Building uncrustify ... #
+###########################
+"""
+# tmp="$(mktemp tmp.XXXXXXXXXX)"
+# cd $UNCRUSTIFY_ROOT_PATH
+# rm -rf build
+# mkdir build
+# cd build
+# cmake .. > $tmp
+# cmake --build . > $tmp
+# rm -rf $tmp
 
-echo
-echo "###########################"
-echo "# Building uncrustify ... #"
-echo "###########################"
-rm -rf $uncrustify_root_path/build
-mkdir $uncrustify_root_path/build
-cd $uncrustify_root_path/build
-cmake .. > $tmp
-cmake --build . > $tmp
-
-cd "$cosmos_root_path/code"
-
-echo
-echo "###############################"
-echo "# Creating files for diff ... #"
-echo "###############################"
-for cpp_file in `find -name '*.cpp'`
+echo """
+########################
+# Formatting files ... #
+########################
+"""
+cd $COSMOS_CODE_ROOT
+for cpp_file in `find . -name '*.cpp'`
 do
-    # remove the output file if existed to prevent `uncrustify` is not override it
+    # remove the output file if it already existed.
     rm -f $cpp_file.uncrustify
+    if [[ "$?" -ne 0 ]]; then
+        echo "# Failed to remove file: \`$COSMOS_CODE_ROOT/$cpp_file\`.\n"
+    fi;
 
-    $uncrustify -q -c $uncrustify_config_path $cpp_file
+    u=$("$UNCRUSTIFY" -q -c "$UNCRUSTIFY_CONFIG_PATH" "$COSMOS_CODE_ROOT/$cpp_file")
+    total=$(($total+1))
+
+    if [[ "$?" -ne 0 ]]; then
+        echo "# Failed to create uncrustify file: \`$COSMOS_CODE_ROOT/$cpp_file\`.\n"
+    fi;
 done
 
-echo
-echo "##################"
-echo "# Diff files ... #"
-echo "##################"
-for cpp_file in `find -name '*.cpp'`
+echo """
+#######################
+# Comparing files ... #
+#######################
+"""
+cd $COSMOS_CODE_ROOT
+for cpp_file in `find . -name '*.cpp'`
 do
-    d=$(diff $cpp_file $cpp_file.uncrustify)
+    d=$(diff "$cpp_file" "$cpp_file.uncrustify")
 
-    if [ "$d" != "" ]; then
-        echo "# The \`$cpp_file\` is not passed"
-        # echo
-        # echo "diff $cpp_file $cpp_file.uncrustify"
-        # echo
-        # echo "$d"
-        # echo
-        error_times=$(($error_times+1))
+    if [[ "$?" -ne 0 ]]; then
+        echo "# The \`$COSMOS_CODE_ROOT/$cpp_file\` is not passed"
+        error=$(($error+1))
     fi;
 done
 
 cd "$cwd"
 
-if [ $error_times != 0 ]; then
-    echo "$error_times error(s) generated."
+if [ $error_code != 0 ]; then
+    exit 1
+elif [ $error != 0 ]; then
+    echo "Failed. $error/$total error(s) generated."
     exit 1
 else
-    echo "Done. \`checking coding style in c++ script\` exited with 0."
+    echo "Passed."
 fi;
