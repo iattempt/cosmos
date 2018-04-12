@@ -53,7 +53,19 @@ matrix:
             - g++-7
       env:
         - MATRIX_EVAL="CXX=g++-7"
-        
+
+    #Python
+    - os: linux
+      language: python
+      python:
+          - "3.3"
+          - "3.4"
+          - "3.5"
+          - "3.6"
+      script:
+        pip install flake8
+        flake8 ./code
+
 before_install:
    - eval "${MATRIX_EVAL}"
  
