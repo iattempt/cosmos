@@ -1,24 +1,23 @@
 # Part of Cosmos by OpenGenus Foundation
+
 class Queue:
     def __init__(self):
-        self._size = 0
         self._data = []
 
-    def empty(self):
-        return self._size == 0
-
     def __len__(self):
-        return self._size
+        return len(self._data)
+
+    def empty(self):
+        return len(self) == 0
+
+    def clear(self):
+        self._data = []
 
     def push(self, x):
         self._data.insert(0, x)
-        self._size += 1
 
     def pop(self):
-        if self._size == 0:
-            return None
-        x = self._data.pop()
-        self._size -= 1
+        self._data.pop()
 
     def front(self):
         return self.data()[0]
@@ -75,6 +74,13 @@ def main():
     assert(q.data() == [])
     assert(q.empty())
     assert(len(q) == 0)
+
+    q.push(1)
+    q.push(1)
+    q.push(1)
+    assert(not q.empty())
+    q.clear()
+    assert(q.empty())
 
 if __name__ == "__main__":
     main()
