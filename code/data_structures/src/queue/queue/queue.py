@@ -2,67 +2,71 @@
 import array
 
 class Queue:
-	def __init__(self, size_max):
-		self.max = size_max
-		self.size = 0
-		self.data = []
-  
-  def empty(self):
-    return self.size == 0
+    def __init__(self):
+        self._size = 0
+        self._data = []
 
-  def full(self):
-    return self.size == self.max
+    def empty(self):
+        return self._size == 0
 
-	def enqueue(self, x):
-		if self.size == self.max:
-			print "Queue full"
-			return False
-		self.data.insert(0, x)
-		self.size += 1
-		return True
+    def push(self, x):
+        self._data.insert(0, x)
+        self._size += 1
 
-	def dequeue(self):
-		if self.size == 0:
-			return None
-		x = self.data.pop()
-		self.size -= 1
-		return x
+    def pop(self):
+        if self._size == 0:
+            return None
+        x = self._data.pop()
+        self._size -= 1
 
-	def display(self):
-		if self.size == 0:
-			print "Queue is empty"
-		else:
-			out = ""
-			for ele in self.data:
-				out = out + " " + str(ele)
-			print(out[::-1])
-		return
+    def front(self):
+        return self.data()[0]
 
-print "Enter the size of Queue"
-n = int(raw_input())
-q = Queue(n)
-while True:
-	print "Press E to enqueue an element"
-	print "Press D to dequeue an element"
-	print "Press P to display all elements of the queue"
-	print "Press X to exit"
-	opt = raw_input().strip()
-	if opt == "E":
-		if q.size == q.max:
-			print "Queue is full"
-			continue
-		print "Enter the element"
-		ele = int(raw_input())
-		q.enqueue(ele)
-		continue
-	if opt == "D":
-		ele = q.dequeue()
-		if ele == None:
-			print "Queue is empty"
-		else:
-			print "Element is", ele
-	if opt == "P":
-		q.display()
-	if opt == "X":
-		break
+    def back(self):
+        return self.data()[-1]
 
+    def data(self):
+        return self._data[::-1]
+
+
+def main():
+    q = Queue()
+    assert(q.data() == [])
+    assert(q.empty())
+
+    q.push(1)
+    assert(q.data() == [1])
+    assert(q.front() == 1)
+    assert(q.back() == 1)
+    assert(not q.empty())
+
+    q.push(2)
+    assert(q.data() == [1, 2])
+    assert(q.front() == 1)
+    assert(q.back() == 2)
+    assert(not q.empty())
+
+    q.pop()
+    assert(q.data() == [2])
+    assert(q.front() == 2)
+    assert(q.back() == 2)
+    assert(not q.empty())
+
+    q.push(3)
+    assert(q.data() == [2, 3])
+    assert(q.front() == 2)
+    assert(q.back() == 3)
+    assert(not q.empty())
+
+    q.pop()
+    assert(q.data() == [3])
+    assert(q.front() == 3)
+    assert(q.back() == 3)
+    assert(not q.empty())
+
+    q.pop()
+    assert(q.data() == [])
+    assert(q.empty())
+
+if __name__ == "__main__":
+    main()
