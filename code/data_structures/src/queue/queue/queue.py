@@ -1,6 +1,4 @@
 # Part of Cosmos by OpenGenus Foundation
-import array
-
 class Queue:
     def __init__(self):
         self._size = 0
