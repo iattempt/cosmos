@@ -1,37 +1,29 @@
 # Part of Cosmos by OpenGenus Foundation
-def left(i):
+def __left(i):
     return 2 * i + 1
 
 
-def right(i):
+def __right(i):
     return 2 * i + 2
 
 
-def heapify(a, i):
-    l = left(i)
-    r = right(i)
-    length = len(a)
-    if l < length and a[l] > a[i]:
+def heapify(a, root, length=None):
+    if length is None:
+        length = len(a)
+    l = __left(root)
+    r = __right(root)
+    largest = root
+
+    if l < length and a[l] > a[largest]:
         largest = l
-    else:
-        largest = i
     if r < length and a[r] > a[largest]:
         largest = r
-    if largest != i:
-        a[i], a[largest] = a[largest], a[i]
-        heapify(a, largest)
-    
+
+    if largest != root:
+        a[root], a[largest] = a[largest], a[root]
+        heapify(a, largest, length)
+
 
 def build_max_heap(a):
     for i in range((len(list(a)) - 1) // 2, -1, -1):
         heapify(a, i)
-
-
-if __name__ == '__main__':
-	print("Enter the array of which you want to create a max heap")
-	a = [int(x) for x in input().split()]
-	build_max_heap(a)
-	print("The max heap is -	")
-	for i in range(len(a)):
-		print(a[i], end = ' ')
-	print('')
