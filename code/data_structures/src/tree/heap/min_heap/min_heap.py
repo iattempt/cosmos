@@ -1,36 +1,29 @@
 # Part of Cosmos by OpenGenus Foundation
-def left(i):
+def __left(i):
     return 2 * i + 1
 
 
-def right(i):
+def __right(i):
     return 2 * i + 2
 
 
-def heapify(a, i):
-    l = left(i)
-    r = right(i)
-    if l < len(a) and a[l] < a[i]:
+def heapify(a, root, length=None):
+    if length is None:
+        length = len(a)
+    l = __left(root)
+    r = __right(root)
+    smallest = root
+
+    if l < length and a[l] < a[smallest]:
         smallest = l
-    else:
-        smallest = i
-    if r < len(a) and a[r] < a[smallest]:
+    if r < length and a[r] < a[smallest]:
         smallest = r
-    if smallest != i:
-        a[i], a[smallest] = a[smallest], a[i]
-        heapify(a, smallest)
+
+    if smallest != root:
+        a[root], a[smallest] = a[smallest], a[root]
+        heapify(a, smallest, length)
 
 
 def build_min_heap(a):
-    for i in range((len(a) - 1) // 2, -1, -1):
+    for i in range((len(list(a)) - 1) // 2, -1, -1):
         heapify(a, i)
-
-
-if __name__ == '__main__':
-    print("Enter the array of which you want to create a min heap")
-    a = [int(x) for x in input().split()]
-    build_min_heap(a)
-    print("The min heap is -")
-    for i in a:
-        print(i, end=' ')
-    print('')
