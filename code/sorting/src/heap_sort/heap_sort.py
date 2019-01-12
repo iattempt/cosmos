@@ -1,6 +1,6 @@
 # Part of Cosmos by OpenGenus Foundation
 import math
-from datastructures.src.tree.heap import max_heap
+from data_structures.src.tree.heap import max_heap
 
 
 def __swap(arr, a, b):
